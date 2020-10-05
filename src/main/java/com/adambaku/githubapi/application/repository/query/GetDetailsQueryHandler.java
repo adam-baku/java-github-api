@@ -2,10 +2,12 @@ package com.adambaku.githubapi.application.repository.query;
 
 import com.adambaku.githubapi.application.repository.exception.RepositoryMovedException;
 import com.adambaku.githubapi.application.repository.exception.RepositoryNotFoundException;
+import com.adambaku.githubapi.application.repository.exception.UnableToReadDetailsException;
 import com.adambaku.githubapi.application.repository.viewmodel.DetailsViewModel;
 import com.adambaku.githubapi.common.exception.ApplicationExceptionAbstract;
 import com.adambaku.githubapi.common.github.GitHubApiClientInterface;
 import com.adambaku.githubapi.common.github.GitHubApiResponseInterface;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,11 @@ public class GetDetailsQueryHandler
         GitHubApiResponseInterface apiResponse = client.GetRepositoryDetails(query.owner, query.repositoryName);
         assertStatusCode(apiResponse, query);
 
-        return new DetailsViewModel();
+        try {
+            return DetailsViewModel.createFromJsonString(apiResponse.body());
+        } catch (JsonProcessingException exception) {
+            throw UnableToReadDetailsException.forApiResponse(apiResponse, exception);
+        }
     }
 
     private void assertStatusCode(GitHubApiResponseInterface apiResponse, GetDetailsQuery query)
