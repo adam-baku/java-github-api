@@ -8,6 +8,7 @@ import com.adambaku.githubapi.infrastructure.java.UrlProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,6 +22,9 @@ public class GitHubApiClient implements GitHubApiClientInterface
     private HttpClient httpClient;
 
     @Autowired
+    private HttpRequest.Builder requestBuilder;
+
+    @Autowired
     private UrlProvider urlProvider;
 
     public GitHubApiResponseInterface GetRepositoryDetails(String owner, String repositoryName)
@@ -30,9 +34,8 @@ public class GitHubApiClient implements GitHubApiClientInterface
             .replaceAll(String.format("\\{%s\\}", "owner"), owner)
             .replaceAll(String.format("\\{%s\\}", "repository-name"), repositoryName);
 
-        var request = HttpRequest.newBuilder()
+        HttpRequest request = requestBuilder.GET()
             .uri(URI.create(preparedUrl))
-            .GET()
             .header("accept", "application/json")
             .timeout(Duration.ofSeconds(5))
             .build();
@@ -41,8 +44,8 @@ public class GitHubApiClient implements GitHubApiClientInterface
             HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
             return new GitHubApiResponse(response);
 
-        } catch (Throwable throwable) {
-            throw UnableToExecuteRequestException.fromHttpClientException(throwable);
+        } catch (IOException | InterruptedException exception) {
+            throw UnableToExecuteRequestException.fromHttpClientException(exception);
         }
     }
 }
