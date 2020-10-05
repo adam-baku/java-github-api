@@ -1,12 +1,10 @@
 package com.adambaku.githubapi.common.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class UnableToExecuteRequestException extends ApplicationExceptionAbstract
 {
-    protected static ExceptionClass CODE = ExceptionClass.FAIL;
-    protected Map<String, String> data = new HashMap<>();
+    static {
+        CODE = ExceptionClass.FAIL;
+    }
 
     public UnableToExecuteRequestException(String message, Throwable cause)
     {

@@ -1,5 +1,6 @@
 package com.adambaku.githubapi.common.exception;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ApplicationExceptionAbstract extends RuntimeException
@@ -26,7 +27,7 @@ public abstract class ApplicationExceptionAbstract extends RuntimeException
     }
 
     protected static ExceptionClass CODE;
-    protected Map<String, String> data;
+    protected Map<String, String> data = new HashMap<>();
 
     public ExceptionClass getCode()
     {

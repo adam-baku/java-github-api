@@ -3,13 +3,11 @@ package com.adambaku.githubapi.application.repository.exception;
 import com.adambaku.githubapi.application.repository.query.GetDetailsQuery;
 import com.adambaku.githubapi.common.exception.ApplicationExceptionAbstract;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RepositoryMovedException extends ApplicationExceptionAbstract
 {
-    protected static ExceptionClass CODE = ExceptionClass.BAD_REQUEST;
-    protected Map<String, String> data = new HashMap<>();
+    static {
+        CODE = ExceptionClass.BAD_REQUEST;
+    }
 
     public RepositoryMovedException(String message)
     {
